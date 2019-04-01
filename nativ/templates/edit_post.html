@@ -1,13 +1,18 @@
 {% extends "base.html" %}
-{% from "bootstrap/form.html" import render_form %}
+{% from "bootstrap/form.html" import render_form, render_field %}
 
-{% block title %}编辑文章{% endblock title %}
+{% block title %}{{ title }}{% endblock title %}
 
 {% block content %}
     <div class="page-header">
-        <h5>编辑文章</h5>
+        <h5>{{ title }}</h5>
     </div>
-    {{ render_form(form) }}
+    <form action="" method="post" class="form clearfix" role="form">
+        {{ form.hidden_tag() }}
+        {{ render_field(form.title) }}
+        {{ render_field(form.body) }}
+        <input class="btn btn-success float-right" id="submit" name="submit" type="submit" value="发布">
+    </form>
 {% endblock content %}
 
 {% block scripts %}

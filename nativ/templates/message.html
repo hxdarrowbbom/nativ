@@ -28,7 +28,7 @@
                             <li class="list-group-item list-group-item-action flex-column">
                                     <div class="d-flex w-100 justify-content-between">
                                         <h5 class="mb-1">
-                                            <p class="comment-a">我在<a href="{{ url_for('show_post', post_id=comment.post.id) }}" target="_blank">{{ comment.post.title }}</a>
+                                            <p class="comment-a">我在<a href="{{ url_for('show_post', post_id=comment.post.id) }}" target="_blank">{{ comment.post.title|truncate(20, True) }}</a>
                                                 中发表了评论：</p>
                                         </h5>
                                         <small data-toggle="tooltip" data-placement="top" data-delay="500"
@@ -65,9 +65,14 @@
                                     data-comment_id="{{ replied.id }}" data-replierd_id="{{ replied.replier.id }}" data-post_id="{{ replied.post.id }}">
                                     <div class="d-flex w-100 justify-content-between">
                                         <h5 class="mb-1">
-                                            <p>{{ replied.replier.username }}在
-                                                <a href="{{ url_for('show_post', post_id=replied.post.id) }}">{{ replied.post.title }}</a>
-                                                中回复了你：
+                                            <p class="comment-a">
+                                                <img src="{{ replied.replier.avatar }}" alt="avatar" class="comment-img">
+                                                <a href="{{ url_for('profile', user_id=replied.replier.id) }}">
+                                                    {{ replied.replier.username }}
+                                                </a>在
+                                                <a href="{{ url_for('show_post', post_id=replied.post.id) }}">
+                                                    {{ replied.post.title|truncate(20, True) }}
+                                                </a>中回复了你：
                                             </p>
                                         </h5>
                                         <small data-toggle="tooltip" data-placement="top" data-delay="500"
@@ -76,9 +81,13 @@
                                         </small>
                                     </div>
                                     {% if replied.replied %}
-                                        <p class="alert alert-dark reply-body text-left">
-                                            <a href="{{ url_for('profile', user_id=replied.replied.replier.id) }}">{{ replied.replied.replier.username }}:</a><br>
-                                            {{ replied.replied.body }}
+                                        <p class="alert alert-dark reply-body text-left comment-a">
+                                            <img src="{{ replied.replied.replier.avatar }}" alt="avatar" class="comment-img">
+                                            <a href="{{ url_for('profile', user_id=replied.replied.replier.id) }}">
+                                                {{ replied.replied.replier.username }}:
+                                            </a>
+                                            <br>
+                                            {{ replied.replied.body|striptags }}
                                         </p>
                                     {% endif %}
                                     <p class="mb-1 text-left">{{ replied.body }}</p>

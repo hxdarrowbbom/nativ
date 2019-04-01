@@ -16,6 +16,7 @@ nerDict = {
     'company_name': '公司名', 'product_name': '产品名', 'job_title': '职位'
 }
 
+
 def tagWrapper(source):
     tagSource = nlp.tag(source)
     tagColor = tagSource[0]['tag']

@@ -25,6 +25,9 @@ flask-uploads = "*"
 pymysql = "*"
 gunicorn = "*"
 faker = "*"
+pycrypto = "*"
+lxml-4-3-2 = "*"
+lxml = "==4.3.2"
 
 [requires]
 python_version = "3.6"

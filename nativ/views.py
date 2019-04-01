@@ -52,7 +52,7 @@ def register():
             db.session.commit()
             send_register_email(user)
             flash('检查你的邮箱以验证用户', 'info')
-            return redirect('login')
+            return redirect(url_for('login'))
     return render_template('register.html', form=form)
 
 
@@ -260,7 +260,7 @@ def new_post():
         db.session.commit()
         flash('文章发布成功', 'success')
         return redirect(url_for('index'))
-    return render_template('new_post.html', form=form)
+    return render_template('edit_post.html', form=form, title="新建文章")
 
 
 @app.route('/post/<int:post_id>/edit', methods=['GET', 'POST'])
@@ -276,7 +276,7 @@ def edit_post(post_id):
         return redirect(url_for('show_post', post_id=post_id))
     form.title.data = post.title
     form.body.data = post.body
-    return render_template('edit_post.html', form=form)
+    return render_template('edit_post.html', form=form, title="编辑文章")
 
 
 @app.route('/post/<int:post_id>', methods=['GET', 'POST'])
@@ -290,7 +290,6 @@ def show_post(post_id):
     form = CommentForm()
     if form.validate_on_submit():
         body = form.body.data
-        # comment = Comment(body=body, post=post, replier=current_user)
         comment = Comment(body=body, post=post, replier=current_user, replierd=post.author)
         db.session.add(comment)
         db.session.commit()
@@ -304,9 +303,10 @@ def show_post(post_id):
 def delete_post(post_id):
     post = Post.query.get_or_404(post_id)
     db.session.delete(post)
-    db.session.commit() ##--提交
+    db.session.commit()
     flash('成功删除文章', 'success')
     return redirect_back()
+
 
 @app.route('/message')
 @login_required
@@ -323,6 +323,9 @@ def message():
     repliedPage = request.args.get('repliedPage', 1, type=int)
     repliedPagi = User.query.get_or_404(current_user.id).replierds.filter(Comment.user_id!=current_user.id)\
         .order_by(Comment.timestamp.desc()).paginate(repliedPage,per_page)
+
+    # repliedPagi = Comment.query.join(Comment, Comment.replied.user_id == current_user.id)\
+    #     .order_by(Comment.timestamp.desc()).paginate(repliedPage,per_page)
     replieds = repliedPagi.items
 
     return render_template('message.html', form=form, comments=comments, commentPagi=commentPagi, replieds=replieds, repliedPagi=repliedPagi)
@@ -375,7 +378,7 @@ def follow(user_id):
 def followers(user_id):
     user = User.query.get_or_404(user_id)
     users = user.followers
-    return render_template('followers.html', users=users, flag=1)
+    return render_template('followers.html', users=users, title="粉丝")
 
 
 @app.route('/user/<int:user_id>/followeds')
@@ -383,5 +386,5 @@ def followers(user_id):
 def followeds(user_id):
     user = User.query.get_or_404(user_id)
     users = user.followed
-    return render_template('followers.html', users=users, flag=0)
+    return render_template('followers.html', users=users, title="关注")
 
