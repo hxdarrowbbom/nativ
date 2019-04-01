@@ -1,0 +1,132 @@
+nav {
+    margin-bottom: 20px;
+}
+
+.inline {
+    display: inline;
+}
+
+.page-header {
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.comments {
+    margin: 20px 0;
+}
+
+.reply-body {
+    margin-top: 10px;
+}
+
+.sidebar {
+    padding-left: 30px;
+}
+
+footer {
+    margin-top: 30px;
+    padding: 10px 0 40px;
+    color: #999;
+    border-top: 1px solid #e5e5e5;
+}
+
+.page-footer {
+    padding-top: 40px;
+}
+
+.tip { /* from github.com */
+    color: black !important;
+    position: relative;
+    padding: 40px;
+    text-align: center;
+    background-color: #fafbfc;
+    border: 1px solid #e1e4e8;
+    border-radius: 3px;
+    box-shadow: inset 0 0 10px rgba(27, 31, 35, 0.05);
+}
+
+.index-start {
+    padding: 30px 0;
+    background-image: linear-gradient(180deg,hsla(0,0%,100%,0) 60%,#fff),linear-gradient(70deg,#dbedff 32%,#ebfff0);
+    border-radius: 10px;
+    margin-bottom: 30px;
+}
+
+.img-size_ {
+    width: 166px;
+    height: 166px;
+    border-radius: 50%;
+    margin: auto;
+    display: block;
+}
+
+.col-4-mw_ {
+    min-width: 320px;
+}
+
+.followers-card {
+    width: 250px;
+    height: 250px;
+}
+
+.card-img_ {
+    border-radius: 50%;
+    width: 30%;
+    height: 30%;
+    margin: 10px auto 0;
+    display: block;
+}
+
+.shelf-title {
+    font-size: 30px;
+    font-weight: 400;
+    margin: 0;
+}
+
+.shelf-lead {
+    font-size: 18px;
+    margin-top: 10px;
+    margin-bottom: 30px;
+}
+
+.shelf-cta {
+    font-size:30px;
+    padding: 10px 50px;
+}
+
+.auth {
+    margin: 0 auto;
+    padding: 2em 2em;
+}
+
+.auth-form {
+    width: 340px;
+    margin: 0 auto;
+    padding: 1em 1em;
+    border: 1px solid #d8dee2;
+}
+
+.auth-p {
+    margin: 1em auto;
+    border: 1px solid #d8dee2;
+    border-radius: 5px;
+    padding: 1em 2em;
+    text-align: center;
+    width: 340px;
+}
+
+.auth-feedback {
+  width: 100%;
+  margin-top: 0.25rem;
+  font-size: 80%;
+  color: #586069;
+}
+
+.comment-a {
+    font-size: 16px;
+}
+
+.comment-img {
+    width: 25px;
+    height: 25px;
+}

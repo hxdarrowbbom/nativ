@@ -1,0 +1,204 @@
+{% extends "nativBase.html" %}
+{% from 'bootstrap/form.html' import render_form, render_field %}
+
+{% block title %}单文本处理{% endblock title %}
+
+{% block content %}
+    {{ super() }}
+    <div class="row">
+        <div class="col-sm-3">
+            <div class="card">
+                <div class="card-header">单文本演示</div>
+                <div class="list-group" style="border-radius: 3px;" id="list-tab" role="tablist">
+                    <a class="list-group-item list-group-item-action active" id="list-tag-list" data-toggle="list" href="#list-tag" role="tab" aria-controls="tag">词性分析</a>
+                    <a class="list-group-item list-group-item-action" id="list-ner-list" data-toggle="list" href="#list-ner" role="tab" aria-controls="ner">实体识别</a>
+                    <a class="list-group-item list-group-item-action" id="list-sentiment-list" data-toggle="list" href="#list-sentiment" role="tab" aria-controls="sentiment">情感分析</a>
+                    <a class="list-group-item list-group-item-action" id="list-extract_keywords-list" data-toggle="list" href="#list-extract_keywords" role="tab" aria-controls="extract_keywords">关键词提取</a>
+                    <a class="list-group-item list-group-item-action" id="list-suggest-list" data-toggle="list" href="#list-suggest" role="tab" aria-controls="suggest">语义联想</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-9 nativ-tab">
+            <div class="tab-content" id="nav-tabContent">
+                <div class="tab-pane fade show active" id="list-tag" role="tabpanel" aria-labelledby="list-tag-list">
+                    <p class="nativ-title">词性分析:</p>
+                    <div class="row">
+                        <div class="col-sm-9">
+                            <dl>
+                                {% for n in tag %}
+                                    <dd class="nativ-span {{ n[0] }}">{{ n[1] }}</dd>
+                                {% endfor %}
+                            </dl>
+                        </div>
+                        <div class="col-sm-3">
+                            <dl>
+                                <dt class="nativ-sup">词性类别图示:</dt>
+                                {% for t in tagSet %}
+                                    <dd class="nativ-span {{ t[0] }}">{{ t[1] }}</dd>
+                                {% endfor %}
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="list-ner" role="tabpanel" aria-labelledby="list-ner-list">
+                    <p class="nativ-title">实体分析:</p>
+                    <div class="row">
+                        <div class="col-sm-9">
+                            <dl>
+                                {% for n in ner %}
+                                    {% if n['word'] %}
+                                        <dd class="nativ-span {{ n['css'] }}">{{ n['word'] }}</dd>
+                                    {% else %}
+                                        <dd class="nativ-span">{{ n }}</dd>
+                                    {% endif %}
+                                {% endfor %}
+                            </dl>
+                        </div>
+                        <div class="col-sm-3">
+                            <dl>
+                                <dt class="nativ-sup">实体类别图示:</dt>
+                                {% for n in nerSet %}
+                                    <dd class="nativ-span {{ n[0] }}">{{ n[1] }}</dd>
+                                {% endfor %}
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="list-sentiment" role="tabpanel" aria-labelledby="list-sentiment-list">
+                    <div class="row">
+                        <div class="col-sm-8" style="min-width: 300px;">
+                            <div id="sentimentChart" class="m-auto" style="height: 300px; width: 300px;">
+
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <dl>
+                                <dt class="nativ-sup">负面指数:</dt>
+                                <p>0~0.5之间判断为负面，</p>
+                                <p>0.5~1之间判断为正面。</p>
+                            </dl>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="tab-pane fade" id="list-extract_keywords" role="tabpanel" aria-labelledby="list-extract_keywords-list">
+                    <p class="nativ-title">关键词提取:</p>
+                    <div class="row">
+                        {% for keyword in keywords %}
+                            <div class="col-sm-4">
+                                <table class="table">
+                                    <thead>
+                                        <tr class="table-primary">
+                                            <th scope="col">#</th>
+                                            <th scope="col">关键词</th>
+                                            <th scope="col">权重</th>
+                                        </tr>
+                                    </thead>
+                                    {% set nowLoop = loop.index0 %}
+                                    <tbody>
+                                        {% for k in keyword %}
+                                            <tr>
+                                                <th scope="row">{{ loop.index + nowLoop * 5 }}</th>
+                                                <td>{{ k[1] }}</td>
+                                                <td>{{ k[0] }}</td>
+                                            </tr>
+                                        {% endfor %}
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="list-suggest" role="tabpanel" aria-labelledby="list-suggest-list">
+                    <p class="nativ-title">语义联想:</p>
+                    <div class="row">
+                        {% for suggest in suggests %}
+                            <div class="col-sm-4">
+                                <p>关键词:{{ suggest[0][1] }}</p>
+                                <table class="table">
+                                    <thead>
+                                        <tr class="table-primary">
+                                            <th scope="col">#</th>
+                                            <th scope="col">名称</th>
+                                            <th scope="col">相关性</th>
+                                        </tr>
+                                    </thead>
+                                    {% set nowLoop = loop.index0 %}
+                                    <tbody>
+                                        {% for s in suggest %}
+                                            <tr>
+                                                <th scope="row">{{ loop.index }}</th>
+                                                <td>{{ s[1] }}</td>
+                                                <td>{{ s[0] }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block scripts %}
+    {{ super() }}
+{#    <script src="https://cdn.bootcss.com/echarts/4.2.1-rc1/echarts.min.js"></script>#}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/echarts.min.js') }}"></script>
+    <script type="text/javascript">
+        var myChart = echarts.init(document.getElementById('sentimentChart'));
+        var option = {
+            title: {
+                text: '情感分析',
+                x: 'center'
+            },
+            tooltip: {
+                trigger: 'item',
+                formatter: "{a} <br/>{b}: {c} ({d}%)"
+            },
+            legend: {
+                orient: 'vertical',
+                x: 'right',
+                data:['正面','负面']
+            },
+            series: [
+                {
+                    name:'情感分析',
+                    type:'pie',
+                    radius: ['50%', '70%'],
+                    avoidLabelOverlap: false,
+                    width: 300,
+                    height: 200,
+                    label: {
+                        normal: {
+                            show: false,
+                            position: 'center'
+                        },
+                        emphasis: {
+                            show: true,
+                            textStyle: {
+                                fontSize: '30',
+                            }
+                        }
+                    },
+                    labelLine: {
+                        normal: {
+                            show: false
+                        }
+                    },
+                    data:[
+                        {value:{{ sentiment[0] }}, name:'正面'},
+                        {value:{{ sentiment[1] }}, name:'负面'},
+                    ]
+                }
+            ]
+        };
+        myChart.setOption(option);
+    </script>
+{% endblock scripts %}

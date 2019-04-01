@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+{% from 'bootstrap/form.html' import render_form, render_field %}
+{% from 'bootstrap/pagination.html' import render_pagination %}
+
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block content %}
+    <div class="page-header">
+        <h1>
+            {{ post.title }}
+            {% if current_user == post.author %}
+                <span class="float-right">
+                    <a class="btn btn-info btn-sm" href="{{ url_for('edit_post', post_id=post.id) }}">
+                        编辑
+                    </a>
+                    <form class="inline" method="post" action="{{ url_for('delete_post', post_id=post.id, next=url_for('index')) }}">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('确认删除?');">删除
+                        </button>
+                    </form>
+                </span>
+            {% endif %}
+        </h1>
+        <small>
+            作者: <a href="{{ url_for('profile', user_id=post.author.id) }}">{{ post.author.username }}</a><br>
+            发表时间: {{ moment(post.timestamp).format('LL') }}
+        </small>
+        <div class="row">
+            <div class="col-sm-8">
+                {{ post.body|safe }}
+                <hr>
+                <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target=".postLinkModal">分享</button>
+                <div class="modal fade postLinkModal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel"
+                 aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">连接</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <input type="text" class="form-control"
+                                           value="{{ url_for('.show_post', post_id=post.id, _external=True) }}" readonly>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="comments" id="comments">
+                    <h5>{{ comments|length }} 条评论</h5>
+                    {% if comments %}
+                        <ul class="list-group" id="list-comment">
+                            {% for comment in comments %}
+                                <li class="list-group-item list-group-item-action flex-column">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h5 class="mb-1">
+                                            <img src="{{ comment.replier.avatar }}" alt="avatar" class="comment-img">
+                                            <a href="{{ url_for('profile', user_id=comment.replier.id) }}" target="_blank" class="comment-a">{{ comment.replier.username }}</a>
+                                            {% if post.author.username == comment.replier.username %}
+                                                <span class="badge badge-primary">作者</span>{% endif %}
+                                            {% if comment.replied %}
+                                                <span class="badge badge-light">回复</span>
+                                            {% endif %}
+                                        </h5>
+                                        <small data-toggle="tooltip" data-placement="top" data-delay="500"
+                                               data-timestamp="{{ comment.timestamp.strftime('%Y-%m-%dT%H:%M:%SZ') }}">
+                                            {{ moment(comment.timestamp).fromNow() }}
+                                        </small>
+                                    </div>
+                                    {% if comment.replied %}
+                                        <p class="alert alert-dark reply-body">
+                                            <img src="{{ comment.replied.replier.avatar }}" alt="avatar" class="comment-img">
+                                            <a href="{{ url_for('profile', user_id=comment.replied.replier.id) }}" target="_blank" class="comment-a">{{ comment.replied.replier.username }}:</a><br>
+                                            {{ comment.replied.body }}
+                                        </p>
+                                    {% endif %}
+                                    <p class="mb-1">{{ comment.body }}</p>
+                                    <div class="text-right">
+                                        <button class="btn btn-primary btn-sm collapseBtn ">回复</button>
+                                    </div>
+                                    {% if not current_user.is_anonymous %}
+                                        <div class="inputWrapper"  style="display: none;">
+                                            <form action="{{ url_for('reply_comment', comment_id=comment.id, replierd_id=comment.replier.id, post_id=post.id, next=url_for('show_post', post_id=post.id, _anchor='comments')) }}"
+                                                  method="post" class="form" role="form">
+                                                {{ form.csrf_token }}
+                                                <div class="required my-2">
+                                                    <textarea class="form-control" id="body" name="body" required=""></textarea>
+                                                </div>
+                                                <input class="btn btn-success btn-sm float-right" id="submit" name="submit" type="submit" value="回复">
+                                            </form>
+                                        </div>
+                                    {% else %}
+                                        <div class="tip inputWrapper" style="display: none;"><h5>请先登陆以回复评论</h5></div>
+                                    {% endif %}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <div class="tip"><h5>此文章暂时没有收到评论</h5></div>
+                    {% endif %}
+                </div>
+                {% if comments %}
+                    {{ render_pagination(pagination, align='center', fragment='#comments') }}
+                {% endif %}
+                {% if not current_user.is_anonymous %}
+                    <div id="comment-form">
+                        <form action="{{ url_for('show_post', post_id=post.id, _anchor='comments') }}" method="post">
+                            {{ form.csrf_token }}
+                            {{ render_field(form.body) }}
+                            <input class="btn btn-success float-right" id="submit" name="submit" type="submit" value="回复">
+                        </form>
+                    </div>
+                {% else %}
+                    <div class="tip"><h5>请先登陆以发表评论</h5></div>
+                {% endif %}
+            </div>
+            <div class="col-sm-4">
+                {% include "_sidebar.html" %}
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block scripts %}
+    {{ super() }}
+    <script>
+        $('#list-comment').click((e) => {
+            let target = e.target
+            if ($(target).hasClass('collapseBtn')) {
+                let inputBox = $(target).parent().next()
+                let inputShowState = inputBox[0].style.display !== 'none'
+                if (inputShowState) {
+                    $('.collapseBtn').text('回复')
+                    inputBox.hide()
+                } else {
+                    $('.inputWrapper').hide()
+                    $('.collapseBtn').text('回复')
+                    $(target).text('收起')
+                    inputBox.show()
+                }
+            }
+        })
+    </script>
+{% endblock scripts %}

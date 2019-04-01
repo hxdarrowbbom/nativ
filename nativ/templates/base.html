@@ -1,0 +1,83 @@
+{% from 'bootstrap/nav.html' import render_nav_item %}
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>{% block title %}{% endblock title %} | Boson</title>
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/nativ.css') }}">
+    {{ bootstrap.load_css() }}
+</head>
+<body>
+{% block nav %}
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('index') }}">Boson</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse"
+                data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarColor01">
+                <ul class="navbar-nav mr-auto">
+                    {{ render_nav_item('index', '首页') }}
+                    {% if current_user.is_anonymous %}
+                    {% else %}
+                        {{ render_nav_item('faviour', '关注') }}
+                    {% endif %}
+                    {{ render_nav_item('nativSingle', '自然语言') }}
+                </ul>
+
+                <ul class="navbar-nav">
+                    {% if current_user.is_anonymous %}
+                        {{ render_nav_item('login', '登陆') }}
+                        {{ render_nav_item('register', '注册') }}
+                    {% else %}
+                        {{ render_nav_item('message', '消息') }}
+                        {{ render_nav_item(endpoint='profile', text='个人', user_id=current_user.id) }}
+                        {{ render_nav_item('logout', '登出') }}
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+{% endblock nav %}
+
+{% block navSub %}{% endblock navSub %}
+
+<main class="container">
+    {% for message in get_flashed_messages(with_categories=True) %}
+        <div class="alert alert-{{ message[0] }} flashMessage" role="alert">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            {{ message[1] }}
+        </div>
+    {% endfor %}
+
+    {% block content %}
+    {% endblock content %}
+
+    {% block footer %}
+        <footer>
+            <p class="float-left">
+                <small> &copy; 2019
+                    <a href="" title="">HXDARROW</a> -
+                    <a href="" title="">GitHub</a> -
+                    <a href="" title="">Boson</a>
+                </small>
+            </p>
+        </footer>
+    {% endblock footer %}
+</main>
+
+
+{% block scripts %}
+    {{ bootstrap.load_js() }}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/script.js') }}"></script>
+    {{ moment.include_moment() }}
+    {{ moment.locale('zh-cn') }}
+{% endblock %}
+</body>
+</html>

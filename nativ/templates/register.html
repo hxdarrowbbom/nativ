@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% from "bootstrap/form.html" import render_form, render_field %}
+
+{% block title %}注册{% endblock title %}
+
+{% block content %}
+    <div class="auth">
+        <div class="auth-form">
+        <form action="" method="post" class="form" role="form">
+            {{ form.hidden_tag() }}
+            <div class="form-group required">
+                <label class="form-control-label" for="username">用户名</label>
+                <input class="form-control" id="username" name="username" required="" type="text" value="">
+                <div class="auth-feedback">须在5-10个字符</div>
+                {% for error in form.username.errors %}
+                    <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+            </div>
+            {{ render_field(form.email) }}
+            <div class="form-group required">
+                <label class="form-control-label" for="password">密码</label>
+                <input class="form-control" id="password" name="password" required="" type="password" value="">
+                <div class="auth-feedback">须控制在8-16个字符且需要包含大写字母、小写字母</div>
+                {% for error in form.password.errors %}
+                    <div class="invalid-feedback">{{ error }}</div>
+                {% endfor %}
+            </div>
+            {{ render_field(form.password_repeate) }}
+            <input class="btn btn-success w-100 mt-1" id="submit" name="submit" type="submit" value="注册">
+        </form>
+        </div>
+    </div>
+{% endblock content %}

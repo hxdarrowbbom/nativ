@@ -1,0 +1,24 @@
+{% if posts %}
+    {% for post in posts %}
+        <h3 class="text-primary">
+            <a href="{{ url_for('show_post', post_id=post.id) }}">{{ post.title }}</a>
+        </h3>
+        <small>作者: <a href="{{ url_for('profile', user_id=post.author.id) }}">{{ post.author.username }}</a></small>
+        <p>
+            {{ post.body|striptags|truncate }}
+            <small><a href="{{ url_for('show_post', post_id=post.id) }}">更多</a></small>
+        </p>
+        <small>
+            评论: <a href="{{ url_for('show_post', post_id=post.id) }}#comments">{{ post.comments|length }}</a>
+            <span class="float-right">{{ moment(post.timestamp).format('LL') }}</span>
+        </small>
+        <hr>
+    {% endfor %}
+    <div class="page-footer">
+        {{ render_pager(pagination, align='center') }}
+    </div>
+{% else %}
+    <div class="tip">
+        <h5>暂时没有人发表过文章</h5>
+    </div>
+{% endif  %}

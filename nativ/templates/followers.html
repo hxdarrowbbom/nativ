@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block title %}
+    {% if flag %}
+        粉丝
+    {% else %}
+        关注
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    {% if users.count() %}
+        <div class="container clearfix">
+            {% for user in users %}
+                <div class="card m-2 float-left followers-card">
+                    <img src="{{ user.avatar }}" alt="avator" class="card-img_">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">{{ user.username }}</h5>
+                        {% if current_user.is_following(user) %}
+                            <p><button id="followeBtn_{{ user.id }}" data-user_id="{{ user.id }}" class="btn btn-danger btn-sm followBtn">取消关注</button></p>
+                        {% else %}
+                            <p><button id="followeBtn_{{ user.id }}" data-user_id="{{ user.id }}" class="btn btn-success btn-sm followBtn">关注</button></p>
+                        {% endif %}
+                        <p class="card-text">
+                            <span class="w-50 border-right d-block float-left">
+                                关注：
+                                <a id="followeds_{{ user.id }}" href="{{ url_for('followeds', user_id=user.id) }}" class="card-text">{{ user.followed.count() }}</a>
+                            </span>
+                            <span class="w-50 d-block float-right">
+                                粉丝：
+                                <a id="followers_{{ user.id }}" href="{{ url_for('followers', user_id=user.id) }}" class="card-text">{{ user.followers.count() }}</a>
+                            </span>&nbsp;
+                        </p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="tip">
+            <h5>
+                {% if flag %}
+                    还没有粉丝
+                {% else %}
+                    还未关注任何人
+                {% endif %}
+            </h5>
+        </div>
+    {% endif %}
+{% endblock content %}
+
+{% block scripts %}
+    {{ super() }}
+    <script>
+        $('button').click((e) => {
+            let target = e.target
+            let followElem = $(target)
+            const user_id = target.dataset['user_id']
+            let followers = $('#followers_' + user_id)
+            if (followElem.hasClass('followBtn')) {
+                $.get(
+                    '/user/' + user_id + '/follow',
+                    {},
+                    function (data) {
+                        let text = data['text']
+                        if (text == '取消关注') {
+                            followElem.text(data['text'])
+                            followElem.removeClass('btn-success')
+                            followElem.addClass('btn-danger')
+                            followers.text(parseInt(followers.text()) + 1)
+                        } else {
+                            followElem.text(data['text'])
+                            followElem.removeClass('btn-danger')
+                            followElem.addClass('btn-success')
+                            followers.text(parseInt(followers.text()) - 1)
+                        }
+                    }
+                )
+            }
+        })
+    </script>
+{% endblock scripts %}

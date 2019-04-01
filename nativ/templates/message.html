@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+{% from "bootstrap/form.html" import render_form %}
+{% from "bootstrap/form.html" import render_field %}
+{% from 'bootstrap/pagination.html' import render_pagination %}
+{% from 'marco.html' import render_paginationR %}
+
+{% block title %}消息{% endblock title %}
+
+{% block content %}
+<div class="row tip">
+        <div class="col-sm-4">
+            <div class="card">
+                <div class="card-header">评论分类</div>
+                <div class="list-group" style="border-radius: 3px;" id="list-tab" role="tablist">
+                    <a class="list-group-item list-group-item-action active" id="list-comment-list" data-toggle="list" href="#list-comment" role="tab" aria-controls="comment">我的评论</a>
+                    <a class="list-group-item list-group-item-action " id="list-reply-list" data-toggle="list" href="#list-reply" role="tab" aria-controls="reply">我收到的回复</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-8">
+            <div class="tab-content nativ-tab" id="nav-tabContent">
+                <div class="tab-pane fade show active px-4 py-3" id="list-comment" role="tabpanel" aria-labelledby="list-comment-list">
+                    {% if not comments %}
+                        <h5>还没有评论过</h5>
+                    {% else %}
+                        <ul class="list-group" id="commentWrapper">
+                        {% for comment in comments %}
+                            <li class="list-group-item list-group-item-action flex-column">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h5 class="mb-1">
+                                            <p class="comment-a">我在<a href="{{ url_for('show_post', post_id=comment.post.id) }}" target="_blank">{{ comment.post.title }}</a>
+                                                中发表了评论：</p>
+                                        </h5>
+                                        <small data-toggle="tooltip" data-placement="top" data-delay="500"
+                                               data-timestamp="{{ comment.timestamp.strftime('%Y-%m-%dT%H:%M:%SZ') }}">
+                                            {{ moment(comment.timestamp).fromNow() }}
+                                        </small>
+                                    </div>
+                                    {% if comment.replied %}
+                                        <p class="alert alert-dark reply-body text-left">
+                                            <img src="{{ comment.replied.replier.avatar }}" alt="avatar" class="comment-img">
+                                            <a href="{{ url_for('profile', user_id=comment.replied.replier.id) }}" class="comment-a">{{ comment.replied.replier.username }}</a>:<br>
+                                            {{ comment.replied.body }}
+                                        </p>
+                                    {% endif %}
+                                    <p class="mb-1 text-left">{{ comment.body }}</p>
+                                    <form class="inline float-right" method="post" action="{{ url_for('delete_comment', comment_id=comment.id, next=url_for('message')) }}">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?');">删除
+                                        </button>
+                                    </form>
+                                </li>
+                        {% endfor %}
+                            <div class="mt-3">
+                                {{ render_pagination(commentPagi,  align='center', page_parameter='commentPage') }}
+                            </div>
+                        </ul>
+                    {% endif %}
+                </div>
+                <div class="tab-pane fade px-4 py-3" id="list-reply" role="tabpanel" aria-labelledby="list-reply-list">
+                    {% if replieds %}
+                        <ul class="list-group">
+                            {% for replied in replieds %}
+                                <li class="list-group-item list-group-item-action flex-column"
+                                    data-comment_id="{{ replied.id }}" data-replierd_id="{{ replied.replier.id }}" data-post_id="{{ replied.post.id }}">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h5 class="mb-1">
+                                            <p>{{ replied.replier.username }}在
+                                                <a href="{{ url_for('show_post', post_id=replied.post.id) }}">{{ replied.post.title }}</a>
+                                                中回复了你：
+                                            </p>
+                                        </h5>
+                                        <small data-toggle="tooltip" data-placement="top" data-delay="500"
+                                               data-timestamp="{{ replied.timestamp.strftime('%Y-%m-%dT%H:%M:%SZ') }}">
+                                            {{ moment(replied.timestamp).fromNow() }}
+                                        </small>
+                                    </div>
+                                    {% if replied.replied %}
+                                        <p class="alert alert-dark reply-body text-left">
+                                            <a href="{{ url_for('profile', user_id=replied.replied.replier.id) }}">{{ replied.replied.replier.username }}:</a><br>
+                                            {{ replied.replied.body }}
+                                        </p>
+                                    {% endif %}
+                                    <p class="mb-1 text-left">{{ replied.body }}</p>
+
+                                    <div class="text-right">
+                                        <button class="btn btn-primary btn-sm collapseBtn ">回复</button>
+                                    </div>
+                                    <div class="inputWrapper"  style="display: none;">
+                                        <form action="{{ url_for('reply_comment', comment_id=replied.id, replierd_id=replied.replier.id, post_id=replied.post.id) }}"
+                                              method="post" class="form" role="form">
+                                            {{ form.csrf_token }}
+                                            <div class="required my-2">
+                                                <textarea class="form-control" id="body" name="body" required=""></textarea>
+                                            </div>
+                                            <input class="btn btn-success btn-sm float-right" id="submit" name="submit" type="submit" value="回复">
+                                        </form>
+                                    </div>
+                                </li>
+                            {% endfor %}
+                            <div class="mt-3">
+                                {{ render_paginationR(repliedPagi, align='center', fragment='#list-reply') }}
+                            </div>
+                        </ul>
+                    {% else %}
+                        <h5>未收到回复</h5>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block scripts %}
+    {{ super() }}
+    <script>
+        $('#list-reply').click((e) => {
+            let target = e.target
+            if ($(target).hasClass('collapseBtn')) {
+                let inputBox = $(target).parent().next()
+                let inputShowState = inputBox[0].style.display !== 'none'
+                if (inputShowState) {
+                    $('.collapseBtn').text('回复')
+                    inputBox.hide()
+                } else {
+                    $('.inputWrapper').hide()
+                    $('.collapseBtn').text('回复')
+                    $(target).text('收起')
+                    inputBox.show()
+                }
+            }
+        })
+
+        $(function(){
+            if(window.location.hash.slice(1) == 'list-reply'){
+                $('#list-comment-list').removeClass('active')
+                $('#list-reply-list').addClass('active')
+                $('#list-comment').removeClass('active show')
+                $('#list-reply').addClass('active show')
+            }
+
+        })
+    </script>
+{% endblock scripts %}

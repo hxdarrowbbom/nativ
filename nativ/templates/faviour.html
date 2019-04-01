@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% from 'bootstrap/pagination.html' import render_pager %}
+
+{% block title %}关注{% endblock title %}
+
+{% block content %}
+<div class="row">
+    <div class="col-sm-8">
+        {% include "_post.html" %}
+
+    </div>
+    <div class="col-sm-4">
+        <div class="col-sm sidebar">
+            {% include "_sidebar.html" %}
+        </div>
+    </div>
+</div>
+{% endblock content %}

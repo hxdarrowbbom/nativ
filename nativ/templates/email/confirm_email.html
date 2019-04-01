@@ -1,0 +1,11 @@
+<p>您好！ {{ user.username }},</p>
+<p>
+    点击此处验证邮箱（有效期10分钟）：
+    <a href="{{ url_for('confirm_email', token=token, _external=True) }}">
+        点击
+    </a>.
+</p>
+<p>如果上述方法遇到问题，尝试将以下连接复制到地址栏:</p>
+<p>{{ url_for('confirm_email', token=token, _external=True) }}</p>
+<p>自发送邮件开始计时</p>
+<p>HXDARROW</p>

@@ -1,0 +1,210 @@
+{% extends "base.html" %}
+{% from "bootstrap/form.html" import render_form, render_field %}
+{% from "bootstrap/pagination.html" import render_pagination %}
+
+{% block title %}个人{% endblock title %}
+
+{% block content %}
+    <div class="mb-3">
+        {% if user == current_user %}
+            <form action="" method="POST" enctype="multipart/form-data">
+                {{ form.hidden_tag() }}
+                <div class="row">
+                    <div class="col-sm-4 col-4-mw_">
+                        <div class="card">
+                            <div class="h-75 py-3">
+                                <img id="imgURL" src="{{ user.avatar }}" alt="avator"
+                                     class="img-size_">
+                            </div>
+                            <div class="card-body text-center">
+                                <p class="card-text">
+                                    <input id="avatar" name="avatar" type="file" class="d-block m-auto">
+                                </p>
+                                {% for e in form.avatar.errors %}
+                                    <span class="card-text text-danger">*{{e}}</span>
+                                {% endfor %}
+                                <p class="card-text">
+                                    <span class="w-50 border-right d-block float-left">
+                                        关注：
+                                        <a id="followeds" href="{{ url_for('followeds', user_id=user.id) }}" class="card-text">{{ user.followed.count() }}</a>
+                                    </span>
+                                    <span class="w-50 d-block float-right">
+                                        粉丝：
+                                        <a id="followers" href="{{ url_for('followers', user_id=user.id) }}" class="card-text">{{ user.followers.count() }}</a>
+                                    </span>&nbsp;
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-8">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon1">用户名</span>
+                            </div>
+                            <span class="form-control">{{ user.username }}</span>
+                        </div>
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon1">邮箱</span>
+                            </div>
+                            <span class="form-control">{{ user.email }}</span>
+                        </div>
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text bg-light">个性签名</span>
+                            </div>
+                            <textarea class="form-control" id="about_me" name="about_me">{{ form.about_me.data }}</textarea>
+                        </div>
+                        {% for e in form.about_me.errors %}
+                            <span class="text-danger">*{{e}}</span>
+                        {% endfor %}
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon1">最后登陆时间</span>
+                            </div>
+                            <span class="form-control">{{ moment(user.last_seen).format('LLL') }}</span>
+                        </div>
+                        <input class="btn btn-primary float-right" id="submit" name="submit" type="submit" value="保存">
+                    </div>
+                </div>
+            </form>
+        {% else %}
+            <div class="row">
+                <div class="col-sm-4 col-4-mw_">
+                    <div class="card">
+                        <div class="h-75 py-3">
+                            <img src="{{ user.avatar }}" alt="avator"
+                                 class="img-size_">
+                        </div>
+                        <div class="card-body text-center">
+                            <div class="">
+                                {% if not current_user.is_following(user) %}
+                                    <p><button id="followeBtn" data-user_id="{{ user.id }}" class="btn btn-success btn-sm">关注</button></p>
+                                {% else %}
+                                    <p><button id="followeBtn" data-user_id="{{ user.id }}" class="btn btn-danger btn-sm">取消关注</button></p>
+                                {% endif %}
+                                <p class="card-text">
+                                    <span class="w-50 border-right d-block float-left">
+                                        关注：
+                                        <a id="followeds" href="{{ url_for('followeds', user_id=user.id) }}" class="card-text">{{ user.followed.count() }}</a>
+                                    </span>
+                                    <span class="w-50 d-block float-right">
+                                        粉丝：
+                                        <a id="followers" href="{{ url_for('followers', user_id=user.id) }}" class="card-text">{{ user.followers.count() }}</a>
+                                    </span>&nbsp;
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-8">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon1">username</span>
+                        </div>
+                        <span class="form-control">{{ user.username }}</span>
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon1">email</span>
+                        </div>
+                        <span class="form-control">{{ user.email }}</span>
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">About Me</span>
+                        </div>
+                        <textarea class="form-control bg-white" id="about_me" name="body" readonly>{{ user.about_me }}</textarea>
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon1">last seeen on</span>
+                        </div>
+                        <span class="form-control">{{ moment(user.last_seen).format('LL') }}</span>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+    <div class="py-5">
+
+        {% if posts %}
+            {% for post in posts %}
+                <h3 class="text-primary">
+                    <a href="{{ url_for('show_post', post_id=post.id) }}">{{ post.title }}</a>
+                    {% if user==current_user %}
+                        <span class="float-right">
+                            <a class="btn btn-info btn-sm" href="{{ url_for('edit_post', post_id=post.id) }}">
+                                编辑
+                            </a>
+                            <form class="inline" method="post" action="{{ url_for('delete_post', post_id=post.id, next=url_for('profile', user_id=current_user.id)) }}">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('确认删除?');">删除
+                                </button>
+                            </form>
+                        </span>
+                    {% endif %}
+                </h3>
+                <p>
+                    {{ post.body|striptags|truncate }}
+                    <small><a href="{{ url_for('show_post', post_id=post.id) }}">更多</a></small>
+                </p>
+                <small>
+                    评论: <a href="{{ url_for('show_post', post_id=post.id) }}#comments">{{ post.comments|length }}</a>
+                    <span class="float-right">{{ moment(post.timestamp).format('LL') }}</span>
+                </small>
+                <hr>
+            {% endfor %}
+            {{ render_pagination(pagination, align='center') }}
+        {% else %}
+            <div class="tip">
+                <h5>还没有发布过文章</h5>
+                <p class="text-muted">写点东西吧</p>
+                <a href="{{ url_for('new_post') }}" class="btn btn-success">撰写</a>
+            </div>
+        {% endif %}
+    </div>
+{% endblock content %}
+
+{% block scripts %}
+    {{ super() }}
+    <script>
+        $('#followeBtn').click((e) => {
+            let target = e.target
+            const user_id = target.dataset['user_id']
+            let followers = $('#followers')
+            $.get(
+                '/user/' + user_id + '/follow',
+                {},
+                function (data) {
+                    let text = data['text']
+                    if(text == '取消关注'){
+                        $(target).text(data['text'])
+                        $(target).removeClass('btn-success')
+                        $(target).addClass('btn-danger')
+                        followers.text(parseInt(followers.text()) + 1)
+                    }else{
+                        $(target).text(data['text'])
+                        $(target).removeClass('btn-danger')
+                        $(target).addClass('btn-success')
+                        followers.text(parseInt(followers.text()) - 1)
+                    }
+
+                }
+            )
+        })
+        $("#avatar").change(function(e) {
+            for (var i = 0; i < e.target.files.length; i++) {
+                var file = e.target.files.item(i);
+                var freader = new FileReader();
+                freader.readAsDataURL(file);
+                freader.onload = function(e) {
+                    var src = e.target.result;
+                    $("#imgURL").attr("src",src);
+                }
+            }
+        });
+    </script>
+{% endblock %}

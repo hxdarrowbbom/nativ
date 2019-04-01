@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% from 'bootstrap/nav.html' import render_nav_item %}
+
+{% block navSub %}
+    <div class="container">
+        <ul class="nav justify-content-end nav-pills">
+            {{ render_nav_item('nativSingle', '单文本分析') }}
+            {{ render_nav_item('nativMulti', '多文本分析') }}
+        </ul>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <form action="" class="form clearfix mb-3" method="post" role="form">
+        {{ form.hidden_tag() }}
+        <div class="form-group required">
+            <label class="form-control-label nativ-title" for="body">源文本:</label>
+            <textarea class="form-control nativ-textarea" id="body" name="body" required="">{{ form.body.data }}</textarea>
+        </div>
+        <input class="btn btn-success float-right" id="submit" name="submit" type="submit" value="提交文本">
+    </form>
+{% endblock content %}
+

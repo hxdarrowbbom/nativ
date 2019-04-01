@@ -1,0 +1,7 @@
+您好！ {{ user.username }},
+
+验证邮箱请将以下连接复制到地址栏:
+
+{{ url_for('confirm_email', token=token, _external=True) }}
+
+HXDARROW

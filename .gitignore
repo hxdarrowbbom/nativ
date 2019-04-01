@@ -1,0 +1,14 @@
+/.git/
+/.idea/
+
+/logs/
+
+/data-dev.db
+
+/Pipfile.lock
+
+*.env
+
+*.pyc
+
+/nativ/__pycache__/

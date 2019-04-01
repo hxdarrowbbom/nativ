@@ -1,0 +1,113 @@
+.nativ-span {
+    display: inline-block;
+    margin: 2px;
+    padding: 3px 8px;
+}
+
+.nativ-dd {
+    display: inline-block;
+    margin: 2px;
+}
+
+.nativ-span-sub {
+    background-color: #ccc;
+    display: inline-block;
+    padding: 3px 8px;
+}
+
+.nativ-tab { /* from github.com */
+    padding: 20px;
+    background-color: #fafbfc;
+    border: 1px solid #e1e4e8;
+    border-radius: 3px;
+    box-shadow: inset 0 0 10px rgba(27, 31, 35, 0.05);
+    min-width: 720px;
+}
+
+.nativ-title {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.nativ-sup {
+    line-height: 30px;
+    color: #979797;
+    font-size: 16px;
+}
+
+.nativ-textarea {
+    height: 200px;
+}
+
+.n, .nl { background-color: #488fce }
+.nr { background-color: #50c6fb }
+.ns { background-color: #d07f7f }
+.nt { background-color: #8e8b8b }
+.nz { background-color: #8bc3f5 }
+
+.t, .tg { background-color: #c7aee7 }
+
+.s { background-color: #cee887 }
+
+.f { background-color: #c9aaca }
+
+.v, .vd, .vf, .vi, .vl, .vn, .vyou { background-color: #ffcb99 }
+
+.a, .ad, .al, .an { background-color: #67ccaa }
+
+.b, .bl { background-color: #67a6d9 }
+
+.z { background-color: #f3e988 }
+
+.r { background-color: #9acccd }
+
+.m, .mq { background-color: #986699 }
+
+.q, .qt, .qv { background-color: #ff9899 }
+
+.d, .dl { background-color: #ffcccb }
+
+.p, .pb { background-color: #99cc67 }
+
+.c, .cc { background-color: #8ea4de }
+
+.u, .ud, .ug, .ul, .us, .uy, .uz { background-color: #4dd9e6 }
+
+.e { background-color: #d7acd7 }
+
+.y { background-color: #f48363 }
+
+.o { background-color: #f2d404 }
+
+.h { background-color: #30aadd }
+
+.k { background-color: #55bfcc }
+
+.em, .id, .ip, .nx, .te, .ur,
+.x, .xu, .xx {
+    background-color: #96dbf8
+}
+
+.w, .wb, .wd, .wf, .wh, .wj, .wk,
+.wm, .wn, .wp, .ws, .wt, .ww, .wy {
+    background-color: #ccc
+}
+
+dd { background-color: #ccc }
+
+.time { background-color: #ffcccb }
+
+.person_name { background-color: #9acccd }
+
+.location { background-color: #488fce }
+
+.job_title { background-color: #49e6 }
+
+.desc, .org_name { background-color: #ffcb99 }
+
+.aspect, .company_name { background-color: #99cc67 }
+
+.product, .product_name { background-color: #ff9899 }
+
+.condition { background-color: #f48363 }
+

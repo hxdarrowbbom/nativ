@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% from "bootstrap/form.html" import render_form, render_field %}
+
+{% block title %}登陆{% endblock title %}
+
+{% block content %}
+    <div class="auth">
+        <div class="auth-form">
+        <form action="" method="post" class="form" role="form">
+            {{ form.hidden_tag() }}
+            {{ render_field(form.email) }}
+            {{ render_field(form.password) }}
+            {{ render_field(form.remember) }}
+            <input class="btn btn-success w-100 mt-1" id="submit" name="submit" type="submit" value="登陆">
+        </form>
+        </div>
+        <p class="auth-p">
+            新用户?
+            <a href="{{ url_for('register') }}">创建用户</a>.
+        </p>
+        <p class="auth-p">
+            忘记密码?
+            <a href="{{ url_for('reset_password_request') }}">重设密码</a>.
+        </p>
+    </div>
+{% endblock content %}
