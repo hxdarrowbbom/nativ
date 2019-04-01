@@ -16,6 +16,8 @@ nerDict = {
     'company_name': '公司名', 'product_name': '产品名', 'job_title': '职位'
 }
 
+commentSpider = [('agan', 82), ('chengdu', 362), ('endlove', 98), ('shawshank', 109), ('wifi', 222)]
+
 
 def tagWrapper(source):
     tagSource = nlp.tag(source)

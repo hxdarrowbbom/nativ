@@ -12,7 +12,7 @@ from nativ.email import send_password_reset_email, send_register_email
 import uuid
 import sqlalchemy
 from nativ.nativWrapper import tagWrapper, nerWrapper, sentimentWrapper, \
-    keywordsWrapper, suggestWrapper, nersWrapper
+    keywordsWrapper, suggestWrapper, nersWrapper, commentSpider
 import os
 from datetime import datetime
 import pymongo
@@ -169,11 +169,11 @@ def nativSingle():
                                suggests=suggests)
 
     try:
-        comments = ['DreamItPossible', 'ROGWIFI', 'Shawshank']
         mongodb = pymongo.MongoClient(host='localhost', port=27017)
         db = mongodb['comments']
-        collection = db[random.choice(comments)]
-        len = collection.find().count()
+        spider = random.choice(commentSpider)
+        collection = db[spider[0]]
+        len = spider[1]
         record = collection.find().skip(random.randint(0, len - 1)).limit(1)[0]
         source = record['content']
     except Exception as e:
@@ -204,13 +204,13 @@ def nativMulti():
         ners, nersSet = nersWrapper(source)
         return render_template('nativMulti.html', form=form, ners=ners, nersSet=nersSet)
     try:
-        comments = ['DreamItPossible', 'ROGWIFI', 'Shawshank']
         mongodb = pymongo.MongoClient(host='localhost', port=27017)
         db = mongodb['comments']
         source = ''
         for i in range(20):
-            collection = db[random.choice(comments)]
-            len = collection.find().count()
+            spider = random.choice(commentSpider)
+            collection = db[spider[0]]
+            len = spider[1]
             record = collection.find().skip(random.randint(0, len - 1)).limit(1)[0]
             tmpSource = record['content']
             source += tmpSource + '\r\n'
