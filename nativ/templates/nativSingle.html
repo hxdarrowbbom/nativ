@@ -51,7 +51,9 @@
                                     {% if n['word'] %}
                                         <dd class="nativ-span {{ n['css'] }}">{{ n['word'] }}</dd>
                                     {% else %}
-                                        <dd class="nativ-span">{{ n }}</dd>
+                                        {% if n != ' ' %}
+                                            <dd class="nativ-span">{{ n }}</dd>
+                                        {% endif %}
                                     {% endif %}
                                 {% endfor %}
                             </dl>

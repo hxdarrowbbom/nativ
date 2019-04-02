@@ -21,7 +21,7 @@ class User(db.Model, UserMixin):
     password_hash = db.Column(db.String(128))
     confirmed = db.Column(db.Boolean, default=False)
 
-    avatar = db.Column(db.String(40), default='/static/avatar/default.png')
+    avatar = db.Column(db.String(144), default='/static/avatar/default.png')
     about_me = db.Column(db.String(20), default='这个人很懒，没有填写签名')
     theme = db.Column(db.String(20), default='perfectBlue')
     last_seen = db.Column(db.DateTime, default=datetime.utcnow)
