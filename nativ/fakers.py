@@ -39,7 +39,7 @@ def fake_posts(count=300):
     db.session.commit()
 
 
-def fake_comments(count=100):
+def fake_comments(count=5000):
     origin = int(count - 0.5)
     for i in range(origin):
         post = Post.query.get(random.randint(1, Post.query.count()))
@@ -63,7 +63,6 @@ def fake_comments(count=100):
             replied=tmpComment,
             replierd=tmpComment.replier,
             timestamp=fake.date_time_this_year()
-            # replierd_id=tmpComment.user_id
         )
         db.session.add(comment)
     db.session.commit()

@@ -22,8 +22,7 @@ class User(db.Model, UserMixin):
     confirmed = db.Column(db.Boolean, default=False)
 
     avatar = db.Column(db.String(144), default='/static/avatar/default.png')
-    about_me = db.Column(db.String(20), default='这个人很懒，没有填写签名')
-    theme = db.Column(db.String(20), default='perfectBlue')
+    about_me = db.Column(db.String(144), default='这个人很懒，没有填写签名')
     last_seen = db.Column(db.DateTime, default=datetime.utcnow)
 
     posts = db.relationship('Post', back_populates='author', lazy='dynamic')

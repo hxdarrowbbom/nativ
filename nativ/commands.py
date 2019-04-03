@@ -22,8 +22,8 @@ def make_shell_context():
 
 @app.cli.command()
 @click.option('--user', default=30, help='用户数量，默认为30')
-@click.option('--post', default=30, help='文章数量，默认为300')
-@click.option('--comment', default=100, help='评论数量，默认为5000')
+@click.option('--post', default=300, help='文章数量，默认为300')
+@click.option('--comment', default=5000, help='评论数量，默认为5000')
 def forge(user, post, comment):
     '''Generating fake data.'''
     from nativ.fakers import fake_user, fake_posts, fake_comments
