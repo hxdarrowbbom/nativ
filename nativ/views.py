@@ -1,6 +1,6 @@
 from nativ import app, db, nlp
 from flask import render_template, redirect, url_for, \
-    flash, request, current_app, jsonify, json
+    flash, request, current_app, jsonify, json, abort
 from nativ.forms import NativForm, LoginForm, \
     RegisterForm, PostForm, ProfileForm, CommentForm, \
     ResetPasswordRequestForm, ResetPasswordForm
@@ -147,10 +147,11 @@ def faviour():
 @app.route('/test')
 def test():
     # source = "用了十来天吧，设置好信号覆盖全屋，路由在卧室电脑桌的角落，之前的小米看电视总卡，隔了三堵墙确实难为它。群里很多兄弟都换上了86u，想着跟上大家的脚步，咬咬牙买了这么贵的路由，现在看来效果显著贵有贵的好处。非常满意"
-    source = 'hello          world'
-    result, tagSet = nerWrapper(source)
+    # source = 'hello          world'
+    # result, tagSet = nerWrapper(source)
     # result, tagSet = tagWrapper(source)
-    return jsonify(result)
+    abort(500)
+
 
 
 @app.route('/nativSingle', methods=['GET', 'POST'])

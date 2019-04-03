@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block title %}500 错误{% endblock %}
+
+{% block content %}
+    <div class="page-header">
+        <h1>500 错误</h1>
+        <p>对不起，内部服务器错误，管理员正在处理</p>
+        <small><a href="{{ url_for('index') }}">返回首页</a></small>
+    </div>
+{% endblock %}
